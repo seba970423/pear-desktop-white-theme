@@ -6,7 +6,7 @@
 
 ## Preview
 
-![Queue with a light background, black track text, and white playback icons over correctly coloured thumbnails](docs/images/queue.png)
+![Pear Desktop with the Light Crimson theme, showing the home page, sidebar, cover art, search bar, and player controls](docs/images/preview.png)
 
 ## Features
 
