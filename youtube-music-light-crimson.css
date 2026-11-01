@@ -1,0 +1,464 @@
+/*
+ * Pear Desktop White Theme (Light Crimson) - v1.0.0
+ * SPDX-License-Identifier: MIT
+ * Copyright (c) 2026 Seba
+ * Replace the previous theme with this entire file; do not append it.
+ *
+ * The page is inverted once, and media pixels are inverted once more.
+ * Do not apply the media filter to thumbnail containers as well as images.
+ * Plain inversion avoids clipping from hue and brightness adjustments.
+ *
+ * Visible accent: #DC143C. Its pre-inversion colour is #23EBC3.
+ * Restored elements use ordinary colours; other accents compensate for
+ * the page inversion. Queue thumbnail overlays are restored separately.
+ */
+
+html {
+  filter: invert(1) !important;
+  background: #000000 !important;
+
+  --ytmusic-color-youtubered: #23EBC3 !important;
+  --ytmusic-color-lightred: #23EBC3 !important;
+  --ytmusic-color-mediumred: #23EBC3 !important;
+  --ytmusic-static-brand-red: #23EBC3 !important;
+  --yt-deprecated-brand-youtube-red: #23EBC3 !important;
+  --ts-ytmlogo-circle-color: #23EBC3 !important;
+
+  --ytmusic-slider-active-color: #23EBC3 !important;
+  --ytmusic-player-progress-bar-slider-line-color: #23EBC3 !important;
+  --yt-paper-slider-active-color: #23EBC3 !important;
+  --yt-paper-slider-knob-color: #23EBC3 !important;
+
+  --ytmusic-menu-popup-background: #030303 !important;
+  --ytmusic-dialog-background: #030303 !important;
+  --ytmusic-player-bar-background: #030303 !important;
+}
+
+/* Queue, player, library/search artwork, avatars and videos.
+ * Only filter the actual pixels, regardless of the number of wrappers.
+ * Avatars need the same restoration as other images.
+ */
+img,
+video,
+canvas {
+  filter: invert(1) !important;
+}
+
+/* Some layouts use a background image instead of an <img>.
+ * Restrict this fallback to artwork elements, and never filter a container
+ * with another media element inside it: that would invert the media twice.
+ */
+:is(
+  ytmusic-thumbnail-renderer,
+  yt-img-shadow,
+  #thumbnail,
+  #song-image,
+  [role="img"],
+  ytmusic-thumbnail-renderer *,
+  yt-img-shadow *,
+  #thumbnail *,
+  #song-image *,
+  [role="img"] *
+)[style*="background-image"]:not(:has(
+  img,
+  video,
+  canvas,
+  [style*="background-image"]
+)) {
+  filter: invert(1) !important;
+}
+
+/* Keep the light backdrop neutral instead of tinting it with album colours. */
+.background-gradient.ytmusic-browse-response,
+ytmusic-browse-response .background-gradient {
+  background: #000000 !important;
+  background-image: none !important;
+}
+
+/* Sidebar playlist titles, creator names, and automatic-playlist labels.
+ * White source text becomes black after the page inversion.
+ */
+ytmusic-guide-renderer,
+ytmusic-guide-section-renderer,
+ytmusic-guide-entry-renderer {
+  --ytmusic-text-primary: #FFFFFF !important;
+  --ytmusic-text-secondary: #FFFFFF !important;
+  --ytmusic-overlay-text-primary: #FFFFFF !important;
+  --ytmusic-overlay-text-secondary: #FFFFFF !important;
+  color: #FFFFFF !important;
+}
+
+ytmusic-guide-renderer yt-formatted-string,
+ytmusic-guide-entry-renderer .title,
+ytmusic-guide-entry-renderer .subtitle,
+ytmusic-guide-entry-renderer .subtitle a,
+ytmusic-guide-section-renderer #guide-section-title {
+  color: #FFFFFF !important;
+  --yt-endpoint-color: #FFFFFF !important;
+  --yt-endpoint-hover-color: #FFFFFF !important;
+  --yt-endpoint-visited-color: #FFFFFF !important;
+}
+
+/* Queue titles, artists and durations use the same black text.
+ * Keep filters off the row so artwork retains its single restoration.
+ */
+ytmusic-player-queue-item {
+  --ytmusic-text-primary: #FFFFFF !important;
+  --ytmusic-text-secondary: #FFFFFF !important;
+  --ytmusic-overlay-text-secondary: #FFFFFF !important;
+}
+
+ytmusic-player-queue-item :is(.song-title, .byline, .duration) {
+  color: #FFFFFF !important;
+  --yt-endpoint-color: #FFFFFF !important;
+  --yt-endpoint-hover-color: #FFFFFF !important;
+  --yt-endpoint-visited-color: #FFFFFF !important;
+}
+
+/* The playback icon identifies the current song; its row can stay white. */
+ytmusic-player-queue-item:is(
+  [play-button-state="loading"],
+  [play-button-state="paused"],
+  [play-button-state="playing"]
+) {
+  background-color: #030303 !important;
+}
+
+/* Thumbnail controls are a separate sibling of the artwork image.
+ * Restore this overlay separately so its dark scrim does not become a pale
+ * grey wash over the cover, and its play/speaker symbols remain white.
+ */
+ytmusic-player-queue-item .thumbnail-overlay {
+  filter: invert(1) !important;
+}
+
+/* This restored overlay uses normal colours, including crimson loaders. */
+ytmusic-player-queue-item .thumbnail-overlay,
+ytmusic-player-queue-item .thumbnail-overlay :is(
+  ytmusic-play-button-renderer,
+  tp-yt-paper-spinner,
+  tp-yt-paper-spinner-lite
+) {
+  --ytmusic-play-button-icon-color: #FFFFFF !important;
+  --ytmusic-play-button-guide-icon-color: #FFFFFF !important;
+  --yt-button-color: #FFFFFF !important;
+  --ytmusic-play-button-loading-indicator-color: #DC143C !important;
+  --paper-spinner-color: #DC143C !important;
+  --paper-spinner-layer-1-color: #DC143C !important;
+  --paper-spinner-layer-2-color: #DC143C !important;
+  --paper-spinner-layer-3-color: #DC143C !important;
+  --paper-spinner-layer-4-color: #DC143C !important;
+}
+
+ytmusic-player-queue-item .thumbnail-overlay .spinner-layer {
+  color: #DC143C !important;
+}
+
+/* Restore only the SVG, never both its chassis and the SVG itself.
+ * Preserve the native logo geometry and layout; no extra circle overlay.
+ */
+ytmusic-logo svg,
+.ytmusic-logo svg,
+ytmusic-logo-renderer svg,
+svg#ytm-full {
+  filter: invert(1) !important;
+  color: #212121 !important;
+  --ytmusic-wordmark-text: #212121 !important;
+  --ts-ytmlogo-text-color: #212121 !important;
+  --ts-ytmlogo-circle-color: #DC143C !important;
+  --ytmusic-color-youtubered: #DC143C !important;
+  --ytmusic-static-brand-red: #DC143C !important;
+}
+
+/* Nodes used by the inline YouTube Music logo in the original theme. */
+svg#ytm-full :is(ellipse, circle) {
+  fill: #DC143C !important;
+  fill-opacity: 1 !important;
+  opacity: 1 !important;
+}
+
+svg#ytm-full > ellipse:nth-of-type(2) {
+  stroke: #FFFFFF !important;
+}
+
+svg#ytm-full path {
+  fill: #212121 !important;
+  opacity: 1 !important;
+}
+
+svg#ytm-full > path:nth-of-type(2),
+svg#ytm-full polygon {
+  fill: #FFFFFF !important;
+}
+
+/* Current native logos are external SVG images, not svg#ytm-full.
+ * Supply the same native geometry with a charcoal wordmark and crimson disc.
+ * The existing image restoration above preserves these embedded colours.
+ * Keep the existing link, accessible name and native dimensions.
+ */
+ytmusic-logo img.logo,
+img.logo.ytmusic-logo {
+  content: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20fill%3D%22none%22%20height%3D%2226%22%20viewBox%3D%220%200%2077%2026%22%20width%3D%2277%22%3E%3CclipPath%20id%3D%22a%22%3E%3Cpath%20d%3D%22m0%200h77v26h-77z%22%2F%3E%3C%2FclipPath%3E%3Cg%20clip-path%3D%22url%28%23a%29%22%3E%3Cg%20fill%3D%22%23212121%22%3E%3Cpath%20d%3D%22m30.112%2021.8671h2.32v-7.29c0-2.04-.04-4.21-.2-7.10995h.26l.43%201.78%202.74%2012.61995h2.36l2.69-12.61995.47-1.78h.24c-.12%202.56995-.19%204.88995-.19%207.10995v7.29h2.33v-16.79995h-3.96l-1.42%206.20995c-.6%202.58-1.03%205.78-1.28%207.41h-.19c-.18-1.66-.63-4.85-1.22-7.39l-1.46-6.22995h-3.92z%22%2F%3E%3Cpath%20d%3D%22m48.202%2022.0571c1.46%200%202.37-.61%203.12-1.71h.11l.11%201.52h1.99v-12.35995h-2.64v9.92995c-.28.49-.93.85-1.54.85-.77%200-1.01-.61-1.01-1.63v-9.14995h-2.63v9.26995c0%202.01.58%203.28%202.49%203.28z%22%2F%3E%3Cpath%20d%3D%22m58.7536%2022.1271c2.42%200%203.77-1.07%203.77-3.26%200-1.99-1-2.8-3.38-4.42-1.09-.72-1.68-1.17-1.68-2.23%200-.79.49-1.21%201.38-1.21.97%200%201.3.64%201.34%202.46l2.16-.12c.18-2.85-.84-4.06995-3.46-4.06995-2.48%200-3.67%201.06995-3.67%203.18995%200%201.96.93%202.85%202.68%204.07%201.55%201.07%202.4%201.74%202.4%202.63%200%20.73-.51%201.26-1.4%201.26-1.02%200-1.6-.88-1.5-2.21l-2.19.04c-.34%202.56.86%203.87%203.55%203.87z%22%2F%3E%3Cpath%20d%3D%22m65.387%207.93715c.9%200%201.32-.3%201.32-1.54%200-1.16-.45-1.52-1.32-1.52-.88%200-1.31.32-1.31%201.52%200%201.24.41%201.54%201.31%201.54zm-1.22%2013.92995h2.53v-12.35995h-2.53z%22%2F%3E%3Cpath%20d%3D%22m72.3428%2022.0671c1.26%200%201.97-.1499%202.54-.69.85-.74%201.2-1.89%201.14-3.83l-2.31-.12c0%202.12-.34%202.92-1.33%202.92-1.09%200-1.27-1.19-1.27-3.35v-2.56c0-2.36.23-3.48%201.29-3.48.88%200%201.23.74%201.23%203.1l2.29-.16c.16-1.69-.01-3.07-.81-3.84-.6-.55995-1.49-.77995-2.67-.77995-3.03%200-3.97%201.91995-3.97%205.56995v1.69c0%203.65.71%205.53%203.87%205.53z%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22m13%2026c7.176%200%2013-5.824%2013-13s-5.824-13-13-13-13%205.824-13%2013%205.824%2013%2013%2013z%22%20fill%3D%22%23DC143C%22%2F%3E%3Cpath%20d%3D%22m20.5%2013c0%204.1439-3.3561%207.5-7.5%207.5-4.14386%200-7.5-3.3561-7.5-7.5%200-4.14386%203.35614-7.5%207.5-7.5%204.1439%200%207.5%203.35614%207.5%207.5z%22%20stroke%3D%22%23fff%22%2F%3E%3Cpath%20d%3D%22m17.75%2013-7.5-4.25v8.5z%22%20fill%3D%22%23fff%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") !important;
+  filter: invert(1) !important;
+}
+
+/* Handle the native SVG too if another extension inlines it. */
+ytmusic-logo svg g[fill="#fff"],
+ytmusic-logo svg g[fill="#fff"] path {
+  fill: #212121 !important;
+}
+
+ytmusic-logo svg path[fill="#f03"],
+ytmusic-logo svg path[fill="#ff0033"] {
+  fill: #DC143C !important;
+}
+
+/* Match the bottom player bar to the light page and popup surfaces.
+ * Its own dark-theme background variable would otherwise become grey.
+ */
+ytmusic-player-bar {
+  --ytmusic-player-bar-background: #030303 !important;
+  --ytmusic-text-primary: #FFFFFF !important;
+  --ytmusic-text-secondary: #FFFFFF !important;
+  --ytmusic-overlay-text-primary: #FFFFFF !important;
+  --ytmusic-overlay-text-secondary: #FFFFFF !important;
+  --ytmusic-icon-active: #FFFFFF !important;
+  --ytmusic-icon-inactive: #FFFFFF !important;
+  color: #FFFFFF !important;
+  background-color: #030303 !important;
+  box-shadow: 0 -1px 0 #3B3B3B !important;
+}
+
+/* This sibling fills the scrollbar-width gap beside the transport bar.
+ * It does not inherit custom properties set only on ytmusic-player-bar.
+ */
+ytmusic-app-layout #player-bar-background,
+#player-bar-background.ytmusic-app-layout {
+  background: #030303 !important;
+}
+
+/* White source text/icons become solid black under the page inversion.
+ * Keep the overrides local to the player, including metadata links.
+ */
+ytmusic-player-bar .title,
+ytmusic-player-bar .byline,
+ytmusic-player-bar .byline a,
+ytmusic-player-bar .time-info,
+ytmusic-player-bar yt-icon-button,
+ytmusic-player-bar yt-icon {
+  color: #FFFFFF !important;
+  --yt-endpoint-color: #FFFFFF !important;
+  --yt-endpoint-hover-color: #FFFFFF !important;
+  --yt-endpoint-visited-color: #FFFFFF !important;
+}
+
+ytmusic-player-bar yt-icon {
+  --iron-icon-fill-color: #FFFFFF !important;
+  --icon-color: #FFFFFF !important;
+}
+
+/* Restore each actual slider once, rather than recolouring its wrappers.
+ * Native progress gradients and hover rules must use the same solid accent.
+ */
+html ytmusic-player-bar tp-yt-paper-slider,
+html ytmusic-player-bar paper-slider {
+  filter: invert(1) !important;
+  --ytmusic-slider-active-color: #DC143C !important;
+  --ytmusic-player-progress-bar-slider-line-color: #DC143C !important;
+  --yt-paper-slider-active-color: #DC143C !important;
+  --yt-paper-slider-knob-color: #DC143C !important;
+  --paper-progress-active-color: #DC143C !important;
+  --paper-slider-active-color: #DC143C !important;
+  --paper-slider-knob-color: #DC143C !important;
+  --paper-slider-knob-start-color: #DC143C !important;
+  --paper-slider-knob-start-border-color: #DC143C !important;
+  --paper-slider-disabled-active-color: #DC143C !important;
+  --paper-slider-disabled-knob-color: #DC143C !important;
+  --paper-slider-container-color: #C8C8C8 !important;
+  --paper-slider-secondary-color: #AAAAAA !important;
+}
+
+ytmusic-player-bar :is(tp-yt-paper-slider, paper-slider) #primaryProgress {
+  background: #DC143C !important;
+}
+
+ytmusic-player-bar :is(tp-yt-paper-slider, paper-slider) #sliderKnobInner,
+ytmusic-player-bar :is(tp-yt-paper-slider, paper-slider) .slider-knob-inner {
+  background: #DC143C !important;
+  border-color: #DC143C !important;
+}
+
+ytmusic-player-bar input[type="range"] {
+  accent-color: #23EBC3 !important;
+}
+
+ytmusic-player-bar :is(tp-yt-paper-slider, paper-slider) input[type="range"] {
+  accent-color: #DC143C !important;
+}
+
+/* Loading rings use their own variable, independent of the seekbar.
+ * Keep the native transparent border segments and animation intact.
+ */
+ytmusic-play-button-renderer,
+tp-yt-paper-spinner,
+tp-yt-paper-spinner-lite {
+  --ytmusic-play-button-loading-indicator-color: #23EBC3 !important;
+  --paper-spinner-color: #23EBC3 !important;
+  --paper-spinner-layer-1-color: #23EBC3 !important;
+  --paper-spinner-layer-2-color: #23EBC3 !important;
+  --paper-spinner-layer-3-color: #23EBC3 !important;
+  --paper-spinner-layer-4-color: #23EBC3 !important;
+}
+
+tp-yt-paper-spinner .spinner-layer,
+tp-yt-paper-spinner-lite .spinner-layer {
+  color: #23EBC3 !important;
+}
+
+/* Use the page's #FCFCFC white for the account menu, track/player menus,
+ * search suggestions and Share dialog. These surfaces are still inverted,
+ * so #030303 is their source colour. Hover rows retain visible contrast.
+ */
+ytmusic-menu-popup-renderer,
+yt-multi-page-menu-renderer,
+ytd-multi-page-menu-renderer,
+ytmusic-multi-page-menu-renderer,
+ytmusic-account-menu,
+ytmusic-playback-rate-popup-renderer {
+  background: #030303 !important;
+  --ytmusic-menu-popup-background: #030303 !important;
+  --paper-listbox-background-color: #030303 !important;
+  --yt-spec-general-background-a: #030303 !important;
+  --yt-spec-menu-background: #030303 !important;
+  --ytmusic-text-primary: #FFFFFF !important;
+  --ytmusic-text-secondary: #FFFFFF !important;
+  --ytmusic-overlay-text-primary: #FFFFFF !important;
+  --ytmusic-overlay-text-secondary: #FFFFFF !important;
+  --ytmusic-icon-active: #FFFFFF !important;
+  --ytmusic-icon-inactive: #FFFFFF !important;
+  --yt-spec-text-primary: #FFFFFF !important;
+  --yt-spec-text-secondary: #FFFFFF !important;
+  color: #FFFFFF !important;
+}
+
+/* Match popup labels and ordinary action icons to the player's black text. */
+:is(
+  ytmusic-menu-popup-renderer,
+  yt-multi-page-menu-renderer,
+  ytd-multi-page-menu-renderer,
+  ytmusic-multi-page-menu-renderer,
+  ytmusic-playback-rate-popup-renderer
+) :is(yt-formatted-string, .text, .item-text) {
+  color: #FFFFFF !important;
+  --yt-endpoint-color: #FFFFFF !important;
+  --yt-endpoint-hover-color: #FFFFFF !important;
+  --yt-endpoint-visited-color: #FFFFFF !important;
+}
+
+ytmusic-menu-popup-renderer yt-icon:not(.primary-entry-badge-icon) {
+  color: #FFFFFF !important;
+  --iron-icon-fill-color: #FFFFFF !important;
+  --icon-color: #FFFFFF !important;
+}
+
+/* The native Premium download badge has its own multicolour SVG gradient.
+ * Recolour that badge only; preserve its geometry and accessible label.
+ * Its source background becomes crimson, and its dark source P becomes white.
+ */
+ytmusic-menu-service-item-download-renderer .primary-entry-badge-icon {
+  color: #000000 !important;
+  --iron-icon-fill-color: #000000 !important;
+  --icon-color: #000000 !important;
+}
+
+ytmusic-menu-service-item-download-renderer .primary-entry-badge-icon svg stop {
+  stop-color: #23EBC3 !important;
+  stop-opacity: 1 !important;
+}
+
+ytmusic-menu-service-item-download-renderer .primary-entry-badge-icon svg [fill^="url("] {
+  fill: #23EBC3 !important;
+}
+
+ytmusic-menu-service-item-download-renderer .primary-entry-badge-icon svg :is(
+  [fill="#fff" i],
+  [fill="#ffffff" i],
+  [fill="white" i]
+) {
+  fill: #000000 !important;
+}
+
+/* A visible account-menu edge against the matching white page.
+ * #3B3B3B becomes #C4C4C4 after the page inversion.
+ */
+yt-multi-page-menu-renderer,
+ytd-multi-page-menu-renderer,
+ytmusic-multi-page-menu-renderer {
+  border: 1px solid #3B3B3B !important;
+  box-sizing: border-box !important;
+}
+
+ytmusic-menu-popup-renderer tp-yt-paper-listbox,
+ytmusic-playback-rate-popup-renderer tp-yt-paper-listbox,
+yt-multi-page-menu-renderer #container,
+yt-multi-page-menu-renderer #pages,
+ytd-multi-page-menu-renderer #container,
+ytd-multi-page-menu-renderer #pages,
+ytmusic-active-account-header-renderer,
+yt-active-account-header-renderer {
+  background-color: #030303 !important;
+}
+
+ytmusic-search-box,
+ytmusic-search-box[opened],
+ytmusic-search-box:focus-within {
+  --ytmusic-search-background: #030303 !important;
+  --ytmusic-search-border: #2B2B2B !important;
+}
+
+ytmusic-search-box .search-box,
+ytmusic-search-box #suggestion-list,
+ytmusic-search-box ytmusic-search-suggestions-section {
+  background: #030303 !important;
+}
+
+ytmusic-popup-container tp-yt-paper-dialog,
+ytmusic-dialog,
+ytmusic-unified-share-panel-renderer,
+ytmusic-unified-share-panel-renderer yt-copy-link-renderer {
+  background-color: #030303 !important;
+  --ytmusic-dialog-background: #030303 !important;
+  --yt-spec-general-background-a: #030303 !important;
+}
+
+/* Share targets use inline SVGs, so the image restoration cannot reach them.
+ * Restore the icon pixels once while keeping their labels in the light UI.
+ * This preserves each network's own colours, including Email's white envelope.
+ */
+yt-share-target-renderer yt-icon svg,
+yt-share-target-renderer .ytIconWrapperHost svg {
+  filter: invert(1) !important;
+}
+
+/* Preserve the current light variant of X. Its native icon is a white X on
+ * a black rounded square/circle; the page inversion already makes it suitable.
+ * Match its actual SVG geometry instead of relying on the share-button order.
+ */
+yt-share-target-renderer svg:has(rect[rx="96"]:is(
+  [fill="black" i],
+  [fill="#000" i],
+  [fill="#000000" i]
+)) {
+  filter: none !important;
+}
+
+ytmusic-menu-popup-renderer tp-yt-paper-item:hover,
+ytmusic-menu-popup-renderer tp-yt-paper-item:focus-visible,
+yt-multi-page-menu-renderer tp-yt-paper-item:hover,
+yt-multi-page-menu-renderer tp-yt-paper-item:focus-visible,
+ytd-multi-page-menu-renderer tp-yt-paper-item:hover,
+ytd-multi-page-menu-renderer tp-yt-paper-item:focus-visible,
+ytmusic-search-suggestion-renderer:hover,
+ytmusic-search-suggestion-renderer[selected] {
+  background-color: #141414 !important;
+}

@@ -1,0 +1,62 @@
+name: Publish theme release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - youtube-music-light-crimson.css
+      - CHANGELOG.md
+      - .github/workflows/release.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: theme-releases
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Publish the version declared in the CSS header
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          asset=youtube-music-light-crimson.css
+          for file in "$asset" CHANGELOG.md; do
+            gh api "repos/$GITHUB_REPOSITORY/contents/$file?ref=$GITHUB_SHA" \
+              --jq .content | base64 --decode > "$file"
+          done
+
+          version=$(sed -nE 's/^ \* Pear Desktop White Theme \(Light Crimson\) - (v[0-9]+\.[0-9]+\.[0-9]+)$/\1/p' "$asset")
+          if [[ ! "$version" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo 'The CSS header must declare a version such as v1.0.0.' >&2
+            exit 1
+          fi
+
+          if gh release view "$version" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $version already exists; leaving it unchanged."
+            exit 0
+          fi
+
+          awk -v version="$version" '
+            $1 == "##" && $2 == version { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > release-notes.md
+          if ! grep -q '[^[:space:]]' release-notes.md; then
+            echo "Add a CHANGELOG.md section for $version before releasing." >&2
+            exit 1
+          fi
+
+          gh release create "$version" "$asset" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "Light Crimson $version" \
+            --notes-file release-notes.md \
+            --latest
